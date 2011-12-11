@@ -1,8 +1,25 @@
-#!/usr/bin/env pypy
+#!/usr/bin/env python
 
 import sys
 
-from guess.language import Language, SampleText
+from guess.language import Language
+from guess.sampletext import SampleText
+
+def gen_results(st, eng, ger, fra, spa):
+    probs = {
+        "English": eng.getProbability(sampletext=st),
+        "German": ger.getProbability(sampletext=st),
+        "French": fra.getProbability(sampletext=st),
+        "Spanish": spa.getProbability(sampletext=st)
+    }
+
+    keys = probs.keys()
+    keys.sort(key=probs.__getitem__, reverse=True)
+
+    print "\rLanguage probabilities in descending order:"
+
+    for key in keys:
+        print "%s: %f" % (key, probs[key])
 
 def main():
     eng = Language('data/ep-01-en.test')
@@ -12,44 +29,17 @@ def main():
     
     if len(sys.argv) <= 1:
         while True:
-            print "Puszi Reka :) >>> ",
+            print ">>> ",
             line = sys.stdin.readline()
             
             if not line:
                 break
             
             phrase = SampleText(phrase=line)
-            probs = {
-                "English": eng.getProbability(sampletext=phrase),
-                "German": ger.getProbability(sampletext=phrase),
-                "French": fra.getProbability(sampletext=phrase),
-                "Spanish": spa.getProbability(sampletext=phrase)
-            }
-    
-            keys = probs.keys()
-            keys.sort(key=probs.__getitem__, reverse=True)
-        
-            print "\rLanguage probabilities in descending order:"
-        
-            for key in keys:
-                print "%s: %f" % (key, probs[key])
-
+            gen_results(phrase, eng, ger, fra, spa)
     else:
         phrase = SampleText(phrase=" ".join(sys.argv[1:]))
-        probs = {
-            "English": eng.getProbability(sampletext=phrase),
-            "German": ger.getProbability(sampletext=phrase),
-            "French": fra.getProbability(sampletext=phrase),
-            "Spanish": spa.getProbability(sampletext=phrase)
-        }
+        gen_results(phrase, eng, ger, fra, spa)
 
-        keys = probs.keys()
-        keys.sort(key=probs.__getitem__, reverse=True)
-        
-        print "Language probabilities in descending order:"
-        
-        for key in keys:
-            print "%s: %f" % (key, probs[key])
-    
 if __name__ == "__main__":
     main()

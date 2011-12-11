@@ -17,7 +17,8 @@ class SampleText(object):
             return self._words
         
         words = self.text.split()
-        words = [filter(unicode.isalpha, word) for word in words]
+        words = [filter(unicode.isalpha, word).lower() for word in words]
+                
         words = filter(lambda x: x != "", words)
         
         self._words = {}
@@ -45,8 +46,8 @@ class SampleText(object):
                     grammFreqs[gramm] += num * freq
                 else:
                     grammFreqs[gramm] = num * freq
+        self.__setattr__('_%sFreqs' % grammType, grammFreqs)
         return grammFreqs
-        
     
     @property
     def bigrammFreqs(self):

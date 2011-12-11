@@ -1,7 +1,7 @@
 class Word(object):
     def __init__(self, word = ""):
         self._word = u"$%s@" % word
-        self._length = len(word)
+        self._length = len(self._word)
         self._bigrammFreqs = None
         self._unigrammFreqs = None
     
@@ -13,6 +13,8 @@ class Word(object):
         self._bigrammFreqs = {}
         for i in range(self._length - 1):
             bigramm = self._word[i:i+2]
+            if self._bigrammFreqs.has_key(bigramm):
+                continue
             freq = 1
             for j in range(i + 1, self._length - 1):
                 if bigramm == self._word[j:j+2]:
